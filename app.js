@@ -232,7 +232,7 @@ function selectAuthRole(role) {
   $("#adminAuthTab").classList.toggle("active", isAdmin);
   $("#adminAuthTab").setAttribute("aria-selected", String(isAdmin));
   $("#authHeading").textContent = isAdmin ? "Administrator sign in" : "Welcome back";
-  $(".login-intro").textContent = isAdmin ? "Sign in with an account that has administrator access." : "Sign in to browse parts or create a customer account.";
+  $(".login-intro").textContent = isAdmin ? "Sign in with the same account you registered for admin access." : "Sign in to browse parts or create a customer account.";
   $("#authSubmit").textContent = "Sign in";
   $("#googleSignIn").lastChild.textContent = "Continue with Google";
   $("#authModeButton").hidden = false;
@@ -340,13 +340,13 @@ $("#authModeButton").addEventListener("click", () => {
   const accountType = selectedAuthRole === "admin" ? "admin" : "customer";
   $("#authHeading").textContent = creatingAccount ? `Create your ${accountType} account` : selectedAuthRole === "admin" ? "Administrator sign in" : "Welcome back";
   $(".login-intro").textContent = creatingAccount && selectedAuthRole === "admin"
-    ? "Create the account first. Admin access is granted after the one-time setup or by an existing admin."
+    ? "Register the account you will use to sign in. Admin access is activated by the first-time setup or an existing admin."
     : creatingAccount ? "Create an account to browse parts and contact the shop."
       : selectedAuthRole === "admin" ? "Sign in with an account that has administrator access."
         : "Sign in to browse parts or create a customer account.";
   $("#authSubmit").textContent = creatingAccount ? "Create account" : "Sign in";
   $("#googleSignIn").lastChild.textContent = creatingAccount ? "Create account with Google" : "Continue with Google";
-  $("#authModeButton").textContent = creatingAccount ? "Already registered? Sign in" : selectedAuthRole === "admin" ? "New admin? Create an admin account" : "New here? Create a customer account";
+  $("#authModeButton").textContent = creatingAccount ? "Already have this account? Sign in" : selectedAuthRole === "admin" ? "Create an admin account" : "New here? Create a customer account";
   $("#authError").textContent = "";
 });
 $("#authForm").addEventListener("submit", async (event) => {
@@ -399,9 +399,10 @@ if (useFirebase) {
       const adminRecord = await getDoc(doc(db, "adminUsers", user.uid));
       const actualRole = adminRecord.exists() ? "admin" : "customer";
       if (selectedAuthRole === "admin" && actualRole !== "admin") {
+        const sameAccount = user.email ? `Sign in afterward with ${user.email}.` : "Sign in afterward with the same Google account.";
         $("#authError").textContent = pendingAdminRegistration
-          ? `Account created, but admin access is still pending. For the first admin, create adminUsers/${user.uid} in Firestore. UID: ${user.uid}.`
-          : `This account has no admin role. Ask an existing admin to add UID ${user.uid} in Team access. For the first admin, create adminUsers/${user.uid} in Firestore.`;
+          ? `Admin account created, but access is pending. For the first admin, create adminUsers/${user.uid} in Firestore. UID: ${user.uid}. ${sameAccount}`
+          : `This account has no admin role. Ask an existing admin to add UID ${user.uid} in Team access. ${sameAccount}`;
         pendingAdminRegistration = false;
         await signOut(auth);
         return;
