@@ -380,20 +380,28 @@ if (useFirebase) {
   db = getFirestore(app);
   onAuthStateChanged(auth, async (user) => {
     currentUser = user;
-    if (!user) { currentRole = ""; refs.appShell.hidden = true; refs.landingPage.hidden = false; return; }
-    refs.landingPage.hidden = true;
-    refs.appShell.hidden = false;
-    $("#storageLabel").textContent = "Loading workspace";
+    if (!user) {
+      currentRole = "";
+      refs.appShell.hidden = true;
+      refs.landingPage.hidden = false;
+      $("#authSubmit").disabled = false;
+      $("#googleSignIn").disabled = false;
+      return;
+    }
+    refs.landingPage.hidden = false;
+    refs.appShell.hidden = true;
+    $("#authSubmit").disabled = true;
+    $("#googleSignIn").disabled = true;
+    $("#authError").textContent = "Checking your account access...";
+    $("#storageLabel").textContent = "Checking account access";
     try {
       await syncUserProfile(user);
       const adminRecord = await getDoc(doc(db, "adminUsers", user.uid));
       const actualRole = adminRecord.exists() ? "admin" : "customer";
       if (selectedAuthRole === "admin" && actualRole !== "admin") {
-        refs.landingPage.hidden = false;
-        refs.appShell.hidden = true;
         $("#authError").textContent = pendingAdminRegistration
-          ? "Account created. Grant this UID admin access in Firestore once, then sign in here."
-          : "This account does not have administrator access yet. Ask an admin to add it in Team access.";
+          ? `Account created, but admin access is still pending. For the first admin, create adminUsers/${user.uid} in Firestore. UID: ${user.uid}.`
+          : `This account has no admin role. Ask an existing admin to add UID ${user.uid} in Team access. For the first admin, create adminUsers/${user.uid} in Firestore.`;
         pendingAdminRegistration = false;
         await signOut(auth);
         return;
@@ -402,7 +410,14 @@ if (useFirebase) {
       await loadCloudData();
       setRoleNavigation();
       render();
-    } catch (error) { showToast(`Could not load your workspace: ${authErrorMessage(error)}`, true); }
+      refs.landingPage.hidden = true;
+      refs.appShell.hidden = false;
+    } catch (error) {
+      refs.landingPage.hidden = false;
+      refs.appShell.hidden = true;
+      $("#authError").textContent = `Could not verify or load this account: ${authErrorMessage(error)}. Check the deployed Firestore rules and adminUsers record.`;
+      await signOut(auth);
+    }
   });
 } else {
   products = sampleProducts.map((product) => ({ ...product }));
