@@ -23,6 +23,10 @@ npx --yes firebase-tools deploy --only hosting,firestore:rules
 
 The first command opens Firebase's sign-in flow. The second deploys the static site and the rules configured in `firebase.json`. Firebase Hosting will provide the site's `web.app` and `firebaseapp.com` URLs. In Firebase Authentication settings, make sure the Hosting domain is listed under **Authorized domains**.
 
+## Install on a phone
+
+Open the HTTPS site URL on the device. On Android/Chrome, use **Install app** when it appears or choose **Install app** from the browser menu. On iPhone/iPad, open the site in Safari, tap **Share**, then **Add to Home Screen**. The app shell and Firebase SDK modules are cached for repeat launches; Firebase sign-in and Firestore data still require a network connection.
+
 ## Connect Firebase
 
 1. In Firebase Authentication, enable Email/Password and Google sign-in.

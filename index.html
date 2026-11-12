@@ -6,8 +6,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#172523">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Partwise | Phone Parts Inventory</title>
   <link rel="icon" type="image/svg+xml" href="partwise-icon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +20,7 @@
 
 <body>
   <main class="landing-page" id="landingPage">
-    <header class="landing-header"><a class="brand landing-brand" href="#home"><span class="brand-mark">P<span>.</span></span><span class="brand-name">partwise<small>PHONE PARTS</small></span></a><span class="landing-header-note">Parts, made easier.</span></header>
+    <header class="landing-header"><a class="brand landing-brand" href="#home"><span class="brand-mark">P<span>.</span></span><span class="brand-name">partwise<small>PHONE PARTS</small></span></a><span class="landing-header-note">Parts, made easier.</span><button class="install-app-button" id="installAppButton" type="button" hidden><span aria-hidden="true">↓</span>Install app</button></header>
     <div class="landing-content">
       <section class="landing-copy"><p class="eyebrow">A BETTER WAY TO SOURCE PARTS</p><h1>Find the right part.<br><span>Keep business moving.</span></h1><p>Browse available phone parts, check stock, and send an interest request directly to the shop.</p><div class="landing-proof"><span class="proof-mark">✓</span>Live catalog · Shop-managed stock · Direct requests</div><div class="landing-visual" aria-hidden="true"><div class="visual-label">IN THE SHOP</div><div class="visual-product"><span class="visual-chip">OLED</span><div><strong>Phone displays</strong><small>Reliable parts, ready to source</small></div><b>01</b></div><div class="visual-product second"><span class="visual-chip battery-chip">BAT</span><div><strong>Batteries &amp; charging</strong><small>Check availability before you ask</small></div><b>02</b></div><div class="visual-baseline"><span></span><span></span><span></span><span></span><span></span><span></span></div></div></section>
       <section class="login-panel" aria-labelledby="authHeading">
@@ -104,7 +108,7 @@
           <div class="page-heading"><div><p class="eyebrow">SHOP CATALOG</p><h1 id="customerCatalogHeading">Find your part<span class="heading-period">.</span></h1><p class="heading-subtitle">Browse available parts and send the shop a request.</p></div></div>
           <div class="catalog-toolbar"><div class="search-wrap"><span class="search-symbol">⌕</span><input id="catalogSearch" type="search" placeholder="Search parts or SKU" aria-label="Search catalog"></div><select id="catalogCategory" class="select-control" aria-label="Filter by category"><option value="">All categories</option><option>Displays</option><option>Batteries</option><option>Charging</option><option>Small parts</option><option>Tools</option><option>Other</option></select></div>
           <div class="catalog-grid" id="customerCatalog"></div><div class="empty-state catalog-empty" id="catalogEmpty" hidden><span class="empty-mark">▦</span><strong>No parts match that search</strong><p>Try a different name or category.</p></div>
-        </section>
+        </section>-i-pi----
 
 
         <section class="view" id="customerRequestsView" aria-labelledby="customerRequestsHeading">

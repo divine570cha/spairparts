@@ -31,6 +31,7 @@ let currentRole = "";
 let selectedAuthRole = "customer";
 let creatingAccount = false;
 let pendingAdminRegistration = false;
+let pendingInstallPrompt = null;
 let toastTimer;
 let db;
 let auth;
@@ -42,6 +43,31 @@ function showToast(message, isError = false) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => refs.toast.classList.remove("show"), 3200);
 }
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+}
+const installAppButton = $("#installAppButton");
+const isAppleMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+if (isAppleMobile && !navigator.standalone) installAppButton.hidden = false;
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  pendingInstallPrompt = event;
+  installAppButton.hidden = false;
+});
+installAppButton.addEventListener("click", async () => {
+  if (!pendingInstallPrompt) {
+    showToast("In Safari, tap Share, then choose Add to Home Screen.");
+    return;
+  }
+  pendingInstallPrompt.prompt();
+  const choice = await pendingInstallPrompt.userChoice;
+  if (choice.outcome === "accepted") installAppButton.hidden = true;
+  pendingInstallPrompt = null;
+});
+window.addEventListener("appinstalled", () => {
+  installAppButton.hidden = true;
+  showToast("Partwise added to your device.");
+});
 function lowStock(product) { return Number(product.stock) <= Number(product.minStock); }
 function partInitials(name) { return String(name || "P").split(/\s+/).slice(0, 2).map((word) => word[0]).join("").toUpperCase(); }
 
