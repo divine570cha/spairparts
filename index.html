@@ -1,15 +1,19 @@
+
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#172523">
   <title>Partwise | Phone Parts Inventory</title>
+  <link rel="icon" type="image/svg+xml" href="partwise-icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <main class="landing-page" id="landingPage">
     <header class="landing-header"><a class="brand landing-brand" href="#home"><span class="brand-mark">P<span>.</span></span><span class="brand-name">partwise<small>PHONE PARTS</small></span></a><span class="landing-header-note">Parts, made easier.</span></header>
@@ -20,6 +24,7 @@
     <footer class="landing-footer"><span>PARTWISE · PHONE PARTS BUSINESS SYSTEM</span><span>Secure sign-in powered by Firebase</span></footer>
   </main>
 
+  
   <div class="app-shell" id="appShell" hidden>
     <aside class="sidebar" aria-label="Main navigation">
       <a class="brand" href="#overview"><span class="brand-mark">P<span>.</span></span><span class="brand-name">partwise<small>SHOP MANAGEMENT</small></span></a>
@@ -70,21 +75,25 @@
           <section class="panel table-panel"><div class="panel-heading sales-table-heading"><div><p class="eyebrow">ACTIVITY</p><h2>Sales history</h2></div><div class="search-wrap sales-search"><span class="search-symbol">⌕</span><input id="salesSearch" type="search" placeholder="Search sales" aria-label="Search sales"></div></div><div class="table-scroll"><table><thead><tr><th>PART</th><th>DATE &amp; TIME</th><th>QUANTITY</th><th>UNIT PRICE</th><th>TOTAL</th></tr></thead><tbody id="salesRows"></tbody></table><div class="empty-state" id="salesEmpty" hidden><span class="empty-mark">↗</span><strong>No sales recorded yet</strong><p>Sales you record will show up here.</p></div></div></section>
         </section>
 
+
         <section class="view" id="interestsView" aria-labelledby="interestsHeading">
           <div class="page-heading"><div><p class="eyebrow">CUSTOMER FOLLOW-UPS</p><h1 id="interestsHeading">Interest requests<span class="heading-period">.</span></h1><p class="heading-subtitle">Review customer requests and update their status.</p></div></div>
           <section class="panel table-panel"><div class="table-scroll"><table><thead><tr><th>PART</th><th>CUSTOMER</th><th>QUANTITY</th><th>NOTE</th><th>REQUESTED</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="adminInterestRows"></tbody></table><div class="empty-state" id="adminInterestEmpty" hidden><span class="empty-mark">♡</span><strong>No interest requests yet</strong><p>Customer requests will appear here.</p></div></div></section>
         </section>
+
 
         <section class="view" id="teamView" aria-labelledby="teamHeading">
           <div class="page-heading"><div><p class="eyebrow">STAFF ACCESS</p><h1 id="teamHeading">Team access<span class="heading-period">.</span></h1><p class="heading-subtitle">Promote registered customer accounts to administrators.</p></div></div>
           <section class="panel table-panel"><div class="team-note"><span class="team-note-mark">i</span><p>Only existing accounts appear here. New teammates must create a customer account first; you can then grant admin access.</p></div><div class="table-scroll"><table><thead><tr><th>ACCOUNT</th><th>USER ID</th><th>ACCESS</th><th>ACTION</th></tr></thead><tbody id="teamRows"></tbody></table><div class="empty-state" id="teamEmpty" hidden><span class="empty-mark">♙</span><strong>No registered accounts yet</strong><p>Customer accounts will appear here after their first sign-in.</p></div></div></section>
         </section>
 
+
         <section class="view" id="customerCatalogView" aria-labelledby="customerCatalogHeading">
           <div class="page-heading"><div><p class="eyebrow">SHOP CATALOG</p><h1 id="customerCatalogHeading">Find your part<span class="heading-period">.</span></h1><p class="heading-subtitle">Browse available parts and send the shop a request.</p></div></div>
           <div class="catalog-toolbar"><div class="search-wrap"><span class="search-symbol">⌕</span><input id="catalogSearch" type="search" placeholder="Search parts or SKU" aria-label="Search catalog"></div><select id="catalogCategory" class="select-control" aria-label="Filter by category"><option value="">All categories</option><option>Displays</option><option>Batteries</option><option>Charging</option><option>Small parts</option><option>Tools</option><option>Other</option></select></div>
           <div class="catalog-grid" id="customerCatalog"></div><div class="empty-state catalog-empty" id="catalogEmpty" hidden><span class="empty-mark">▦</span><strong>No parts match that search</strong><p>Try a different name or category.</p></div>
         </section>
+
 
         <section class="view" id="customerRequestsView" aria-labelledby="customerRequestsHeading">
           <div class="page-heading"><div><p class="eyebrow">YOUR FOLLOW-UPS</p><h1 id="customerRequestsHeading">My requests<span class="heading-period">.</span></h1><p class="heading-subtitle">See the latest status of parts you have asked about.</p></div></div>
@@ -93,6 +102,7 @@
       </div>
     </main>
   </div>
+
 
   <dialog class="form-dialog" id="productDialog" aria-labelledby="productDialogTitle"><form id="productForm"><div class="dialog-heading"><div><p class="eyebrow">INVENTORY DETAILS</p><h2 id="productDialogTitle">Add a part</h2></div><button class="close-button" type="button" data-close-dialog aria-label="Close">×</button></div><input type="hidden" name="id"><label>Part name<input name="name" required maxlength="80" placeholder="e.g. iPhone 13 OLED display"></label><div class="form-row"><label>SKU<input name="sku" required maxlength="32" placeholder="e.g. IP13-DSP-OLED"></label><label>Category<select name="category" required><option value="">Choose category</option><option>Displays</option><option>Batteries</option><option>Charging</option><option>Small parts</option><option>Tools</option><option>Other</option></select></label></div><div class="form-row three-cols"><label>In stock<input name="stock" type="number" min="0" step="1" required value="0"></label><label>Cost price<input name="cost" type="number" min="0" step="0.01" required placeholder="0.00"></label><label>Sell price<input name="price" type="number" min="0" step="0.01" required placeholder="0.00"></label></div><label>Low-stock alert at<input name="minStock" type="number" min="0" step="1" required value="3"></label><div class="dialog-actions"><button class="button button-quiet" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit">Save part</button></div><button class="delete-button" id="deleteProductButton" type="button" hidden>Remove this part</button></form></dialog>
 
