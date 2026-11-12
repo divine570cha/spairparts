@@ -6,17 +6,18 @@ service cloud.firestore {
 
   match /databases/{database}/documents {
     function isAdmin() {
-      return signedIn() && exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid));
+      return signedIn() && (
+        (exists(/databases/$(database)/documents/profiles/$(request.auth.uid))
+          && get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.role == 'admin')
+        || exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid))
+      );
     }
 
     match /adminUsers/{userId} {
       allow get: if isAdmin() || (signedIn() && request.auth.uid == userId);
       allow list: if isAdmin();
-      allow create: if isAdmin()
-        && request.resource.data.role == 'admin'
-        && request.resource.data.addedBy == request.auth.uid
-        && request.resource.data.keys().hasOnly(['role', 'addedAt', 'addedBy']);
       allow update, delete: if false;
+      allow create: if false;
     }
 
     match /profiles/{userId} {
@@ -25,12 +26,32 @@ service cloud.firestore {
         && request.auth.uid == userId
         && request.resource.data.uid == userId
         && request.resource.data.email == request.auth.token.email
-        && request.resource.data.keys().hasOnly(['uid', 'email', 'displayName', 'createdAt', 'lastSeenAt']);
-      allow update: if signedIn()
-        && request.auth.uid == userId
-        && request.resource.data.uid == userId
-        && request.resource.data.email == request.auth.token.email
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'lastSeenAt']);
+        && request.resource.data.keys().hasOnly([
+          'uid', 'email', 'displayName', 'role', 'createdAt', 'lastSeenAt',
+          'roleUpdatedAt', 'roleUpdatedBy'
+        ])
+        && (request.resource.data.role == 'customer'
+          || (request.resource.data.role == 'admin'
+            && exists(/databases/$(database)/documents/adminUsers/$(userId))));
+      allow update: if (
+          signedIn()
+          && request.auth.uid == userId
+          && request.resource.data.uid == userId
+          && request.resource.data.email == request.auth.token.email
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'lastSeenAt'])
+        ) || (
+          signedIn()
+          && request.auth.uid == userId
+          && exists(/databases/$(database)/documents/adminUsers/$(userId))
+          && request.resource.data.role == 'admin'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'displayName', 'lastSeenAt'])
+        ) || (
+          isAdmin()
+          && request.resource.data.role in ['admin', 'customer']
+          && request.resource.data.roleUpdatedAt is int
+          && request.resource.data.roleUpdatedBy == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'roleUpdatedAt', 'roleUpdatedBy'])
+        );
       allow delete: if false;
     }
 

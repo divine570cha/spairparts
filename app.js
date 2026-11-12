@@ -53,11 +53,11 @@ async function loadCloudData() {
       getDocs(collection(db, "profiles")), getDocs(collection(db, "adminUsers"))
     ]);
     const costs = new Map(costSnapshot.docs.map((entry) => [entry.id, entry.data().cost]));
-    const admins = new Set(adminSnapshot.docs.map((entry) => entry.id));
+    const legacyAdmins = new Set(adminSnapshot.docs.map((entry) => entry.id));
     products = productSnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data(), cost: Number(costs.get(entry.id) || 0) }));
     sales = saleSnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() }));
     interests = interestSnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data() }));
-    profiles = profileSnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data(), isAdmin: admins.has(entry.id) }));
+    profiles = profileSnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data(), isAdmin: entry.data().role === "admin" || legacyAdmins.has(entry.id) }));
   } else {
     products = productSnapshot.docs.map((entry) => ({ id: entry.id, ...entry.data(), cost: 0 }));
     sales = [];
@@ -241,15 +241,21 @@ function selectAuthRole(role) {
 }
 async function syncUserProfile(user) {
   const profileRef = doc(db, "profiles", user.uid);
-  const profileSnapshot = await getDoc(profileRef);
+  const [profileSnapshot, legacyAdminSnapshot] = await Promise.all([
+    getDoc(profileRef),
+    getDoc(doc(db, "adminUsers", user.uid))
+  ]);
   const existing = profileSnapshot.exists() ? profileSnapshot.data() : {};
-  await setDoc(profileRef, {
+  const profile = {
     uid: user.uid,
     email: user.email || "",
     displayName: user.displayName || existing.displayName || user.email || "Registered account",
+    role: existing.role === "admin" || legacyAdminSnapshot.exists() ? "admin" : "customer",
     createdAt: existing.createdAt || Date.now(),
     lastSeenAt: Date.now()
-  }, { merge: true });
+  };
+  await setDoc(profileRef, profile, { merge: true });
+  return profile;
 }
 
 document.querySelectorAll(".nav-link[data-view]").forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
@@ -291,7 +297,11 @@ $("#teamRows").addEventListener("click", async (event) => {
   const profile = profiles.find((entry) => entry.id === button.dataset.promoteAdmin);
   if (!profile || profile.isAdmin) return;
   try {
-    await setDoc(doc(db, "adminUsers", profile.id), { role: "admin", addedAt: Date.now(), addedBy: currentUser.uid });
+    await updateDoc(doc(db, "profiles", profile.id), {
+      role: "admin",
+      roleUpdatedAt: Date.now(),
+      roleUpdatedBy: currentUser.uid
+    });
     await loadCloudData();
     render();
     showToast(`${profile.email || "Account"} now has admin access.`);
@@ -395,9 +405,8 @@ if (useFirebase) {
     $("#authError").textContent = "Checking your account access...";
     $("#storageLabel").textContent = "Checking account access";
     try {
-      await syncUserProfile(user);
-      const adminRecord = await getDoc(doc(db, "adminUsers", user.uid));
-      const actualRole = adminRecord.exists() ? "admin" : "customer";
+      const profile = await syncUserProfile(user);
+      const actualRole = profile.role;
       if (selectedAuthRole === "admin" && actualRole !== "admin") {
         const sameAccount = user.email ? `Sign in afterward with ${user.email}.` : "Sign in afterward with the same Google account.";
         $("#authError").textContent = pendingAdminRegistration
