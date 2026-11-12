@@ -12,11 +12,16 @@ py -m http.server 8000
 
 Open `http://localhost:8000`. ES modules and Firebase require an HTTP origin; opening `index.html` directly as a file is not supported. With the provided Firebase config, the site connects to the Firebase project. The local sample-data demo is used only when the config contains placeholders.
 
-## Deploy to GitHub Pages
+## Deploy with Firebase Hosting
 
-The workflow in `.github/workflows/pages.yml` deploys the static site after a push to `main` or `master`. In the repository settings, open **Pages** and set the build source to **GitHub Actions**. The first deployment runs after the workflow is pushed or manually started from the Actions tab.
+The project is bound to Firebase project `spairparts-b58f5` in `.firebaserc`. From this folder, run:
 
-Once the Pages URL is known, add its hostname (for example, `account.github.io`, without `https://` or a path) to Firebase Authentication's authorized domains. The repository URL is needed to determine the exact site URL.
+```powershell
+npx --yes firebase-tools login
+npx --yes firebase-tools deploy --only hosting,firestore:rules
+```
+
+The first command opens Firebase's sign-in flow. The second deploys the static site and the rules configured in `firebase.json`. Firebase Hosting will provide the site's `web.app` and `firebaseapp.com` URLs. In Firebase Authentication settings, make sure the Hosting domain is listed under **Authorized domains**.
 
 ## Connect Firebase
 
