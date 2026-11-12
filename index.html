@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172523">
+  <title>Partwise | Phone Parts Inventory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="landing-page" id="landingPage">
+    <header class="landing-header"><a class="brand landing-brand" href="#home"><span class="brand-mark">P<span>.</span></span><span class="brand-name">partwise<small>PHONE PARTS</small></span></a><span class="landing-header-note">Parts, made easier.</span></header>
+    <div class="landing-content">
+      <section class="landing-copy"><p class="eyebrow">A BETTER WAY TO SOURCE PARTS</p><h1>Find the right part.<br><span>Keep business moving.</span></h1><p>Browse available phone parts, check stock, and send an interest request directly to the shop.</p><div class="landing-proof"><span class="proof-mark">✓</span>Live catalog · Shop-managed stock · Direct requests</div><div class="landing-visual" aria-hidden="true"><div class="visual-label">IN THE SHOP</div><div class="visual-product"><span class="visual-chip">OLED</span><div><strong>Phone displays</strong><small>Reliable parts, ready to source</small></div><b>01</b></div><div class="visual-product second"><span class="visual-chip battery-chip">BAT</span><div><strong>Batteries &amp; charging</strong><small>Check availability before you ask</small></div><b>02</b></div><div class="visual-baseline"><span></span><span></span><span></span><span></span><span></span><span></span></div></div></section>
+      <section class="login-panel" aria-labelledby="authHeading"><p class="eyebrow">PARTWISE ACCOUNT</p><div class="auth-tabs" role="tablist" aria-label="Account type"><button class="auth-tab active" id="customerAuthTab" type="button" role="tab" aria-selected="true">Customer</button><button class="auth-tab" id="adminAuthTab" type="button" role="tab" aria-selected="false">Admin</button></div><h2 id="authHeading">Welcome back</h2><p class="login-intro">Sign in to browse parts or create a customer account.</p><button class="google-button" id="googleSignIn" type="button"><span class="google-g">G</span>Continue with Google</button><div class="form-divider"><span>or use email</span></div><form id="authForm"><label>Email address<input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label><label>Password<input name="password" type="password" autocomplete="current-password" minlength="6" required placeholder="At least 6 characters"></label><button class="button button-primary auth-submit" type="submit" id="authSubmit">Sign in</button><button class="auth-mode-button" id="authModeButton" type="button">New here? Create a customer account</button><p class="auth-error" id="authError" role="alert"></p></form></section>
+    </div>
+    <footer class="landing-footer"><span>PARTWISE · PHONE PARTS BUSINESS SYSTEM</span><span>Secure sign-in powered by Firebase</span></footer>
+  </main>
+
+  <div class="app-shell" id="appShell" hidden>
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#overview"><span class="brand-mark">P<span>.</span></span><span class="brand-name">partwise<small>SHOP MANAGEMENT</small></span></a>
+      <div class="store-switcher"><span class="store-avatar">M</span><span><strong>Metro Mobile</strong><small>Parts counter</small></span><span class="switch-chevron">⌄</span></div>
+      <p class="nav-caption">WORKSPACE</p>
+      <nav class="main-nav">
+        <button class="nav-link active" data-role="admin" data-view="overviewView"><span class="nav-icon">⌂</span>Overview</button>
+        <button class="nav-link" data-role="admin" data-view="inventoryView"><span class="nav-icon">▦</span>Inventory<span class="nav-count" id="navStockCount">0</span></button>
+        <button class="nav-link" data-role="admin" data-view="salesView"><span class="nav-icon">↗</span>Sales</button>
+        <button class="nav-link" data-role="admin" data-view="interestsView"><span class="nav-icon">♡</span>Interest requests<span class="nav-count" id="navInterestCount">0</span></button>
+        <button class="nav-link" data-role="admin" data-view="teamView"><span class="nav-icon">♙</span>Team access</button>
+        <button class="nav-link" data-role="customer" data-view="customerCatalogView"><span class="nav-icon">⌕</span>Browse parts</button>
+        <button class="nav-link" data-role="customer" data-view="customerRequestsView"><span class="nav-icon">♡</span>My requests</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sync-status"><span class="status-dot"></span><span id="storageLabel">Local demo data</span></div>
+        <button class="nav-link help-link" id="accountButton"><span class="nav-icon">◎</span><span id="accountLabel">Firebase setup</span></button>
+        <div class="sidebar-user"><span class="user-avatar">JD</span><span><strong>Shop manager</strong><small id="userLabel">Demo workspace</small></span><span class="user-more">···</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar"><div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong id="pageTitle">Overview</strong></div><div class="topbar-actions"><span class="today-label" id="todayLabel"></span><button class="icon-button" id="notificationButton" aria-label="Notifications" title="Notifications">♧<span class="notification-dot"></span></button><button class="top-avatar" aria-label="Shop manager">JD</button></div></header>
+      <div class="page-wrap">
+        <section class="view active" id="overviewView" aria-labelledby="overviewHeading">
+          <div class="page-heading"><div><p class="eyebrow" id="greetingDate">YOUR SHOP AT A GLANCE</p><h1 id="overviewHeading">Good morning, manager<span class="heading-period">.</span></h1><p class="heading-subtitle">Here is what is happening with your parts today.</p></div><button class="button button-primary" data-open-sale><span class="button-symbol">＋</span>Record a sale</button></div>
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-top"><span class="stat-label">Inventory cost</span><span class="stat-icon stat-icon-green">◈</span></div><strong class="stat-value" id="inventoryValue">$0.00</strong><span class="stat-note">Based on current stock at cost</span></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-label">Parts in catalog</span><span class="stat-icon stat-icon-blue">▦</span></div><strong class="stat-value" id="productCount">0</strong><span class="stat-note">Unique parts tracked</span></article>
+            <article class="stat-card stat-card-alert"><div class="stat-top"><span class="stat-label">Need restocking</span><span class="stat-icon stat-icon-orange">!</span></div><strong class="stat-value" id="lowStockCount">0</strong><span class="stat-note">At or below minimum stock</span></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-label">Sales today</span><span class="stat-icon stat-icon-coral">↗</span></div><strong class="stat-value" id="todaySales">$0.00</strong><span class="stat-note" id="todaySaleCount">0 transactions today</span></article>
+          </div>
+          <div class="overview-grid">
+            <section class="panel low-stock-panel"><div class="panel-heading"><div><p class="eyebrow">ACTION NEEDED</p><h2>Restock watch</h2></div><button class="text-button" data-go-view="inventoryView">View inventory <span>→</span></button></div><div id="lowStockList" class="compact-list"></div></section>
+            <section class="panel recent-panel"><div class="panel-heading"><div><p class="eyebrow">THE LATEST</p><h2>Recent sales</h2></div><button class="text-button" data-go-view="salesView">All sales <span>→</span></button></div><div id="recentSalesList" class="compact-list"></div></section>
+          </div>
+          <section class="panel quick-panel"><div class="quick-copy"><span class="quick-mark">↗</span><div><h2>Keep the counter moving</h2><p>Log a sale to update stock and keep your daily numbers current.</p></div></div><button class="button button-dark" data-open-sale>Record sale <span>→</span></button></section>
+        </section>
+
+        <section class="view" id="inventoryView" aria-labelledby="inventoryHeading">
+          <div class="page-heading"><div><p class="eyebrow">PARTS CATALOG</p><h1 id="inventoryHeading">Inventory<span class="heading-period">.</span></h1><p class="heading-subtitle">Track stock, pricing, and reorder points in one place.</p></div><button class="button button-primary" id="addProductButton"><span class="button-symbol">＋</span>Add part</button></div>
+          <section class="panel table-panel"><div class="table-toolbar"><div class="search-wrap"><span class="search-symbol">⌕</span><input id="inventorySearch" type="search" placeholder="Search parts or SKU" aria-label="Search inventory"></div><select id="categoryFilter" class="select-control" aria-label="Filter by category"><option value="">All categories</option><option>Displays</option><option>Batteries</option><option>Charging</option><option>Small parts</option><option>Tools</option><option>Other</option></select><span class="result-count" id="resultCount">0 parts</span></div><div class="table-scroll"><table><thead><tr><th>PART</th><th>SKU</th><th>CATEGORY</th><th>IN STOCK</th><th>SELL PRICE</th><th>STATUS</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="inventoryRows"></tbody></table><div class="empty-state" id="inventoryEmpty" hidden><span class="empty-mark">▦</span><strong>No parts found</strong><p>Add your first part or try another search.</p></div></div></section>
+        </section>
+
+        <section class="view" id="salesView" aria-labelledby="salesHeading">
+          <div class="page-heading"><div><p class="eyebrow">TRANSACTION LOG</p><h1 id="salesHeading">Sales<span class="heading-period">.</span></h1><p class="heading-subtitle">A clear record of what has moved across the counter.</p></div><button class="button button-primary" data-open-sale><span class="button-symbol">＋</span>Record a sale</button></div>
+          <div class="sales-summary"><div><span class="stat-label">All-time recorded sales</span><strong id="allTimeSales">$0.00</strong></div><div><span class="stat-label">Transactions</span><strong id="allTimeTransactions">0</strong></div><div><span class="stat-label">Units moved</span><strong id="unitsMoved">0</strong></div></div>
+          <section class="panel table-panel"><div class="panel-heading sales-table-heading"><div><p class="eyebrow">ACTIVITY</p><h2>Sales history</h2></div><div class="search-wrap sales-search"><span class="search-symbol">⌕</span><input id="salesSearch" type="search" placeholder="Search sales" aria-label="Search sales"></div></div><div class="table-scroll"><table><thead><tr><th>PART</th><th>DATE &amp; TIME</th><th>QUANTITY</th><th>UNIT PRICE</th><th>TOTAL</th></tr></thead><tbody id="salesRows"></tbody></table><div class="empty-state" id="salesEmpty" hidden><span class="empty-mark">↗</span><strong>No sales recorded yet</strong><p>Sales you record will show up here.</p></div></div></section>
+        </section>
+
+        <section class="view" id="interestsView" aria-labelledby="interestsHeading">
+          <div class="page-heading"><div><p class="eyebrow">CUSTOMER FOLLOW-UPS</p><h1 id="interestsHeading">Interest requests<span class="heading-period">.</span></h1><p class="heading-subtitle">Review customer requests and update their status.</p></div></div>
+          <section class="panel table-panel"><div class="table-scroll"><table><thead><tr><th>PART</th><th>CUSTOMER</th><th>QUANTITY</th><th>NOTE</th><th>REQUESTED</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="adminInterestRows"></tbody></table><div class="empty-state" id="adminInterestEmpty" hidden><span class="empty-mark">♡</span><strong>No interest requests yet</strong><p>Customer requests will appear here.</p></div></div></section>
+        </section>
+
+        <section class="view" id="teamView" aria-labelledby="teamHeading">
+          <div class="page-heading"><div><p class="eyebrow">STAFF ACCESS</p><h1 id="teamHeading">Team access<span class="heading-period">.</span></h1><p class="heading-subtitle">Promote registered customer accounts to administrators.</p></div></div>
+          <section class="panel table-panel"><div class="team-note"><span class="team-note-mark">i</span><p>Only existing accounts appear here. New teammates must create a customer account first; you can then grant admin access.</p></div><div class="table-scroll"><table><thead><tr><th>ACCOUNT</th><th>USER ID</th><th>ACCESS</th><th>ACTION</th></tr></thead><tbody id="teamRows"></tbody></table><div class="empty-state" id="teamEmpty" hidden><span class="empty-mark">♙</span><strong>No registered accounts yet</strong><p>Customer accounts will appear here after their first sign-in.</p></div></div></section>
+        </section>
+
+        <section class="view" id="customerCatalogView" aria-labelledby="customerCatalogHeading">
+          <div class="page-heading"><div><p class="eyebrow">SHOP CATALOG</p><h1 id="customerCatalogHeading">Find your part<span class="heading-period">.</span></h1><p class="heading-subtitle">Browse available parts and send the shop a request.</p></div></div>
+          <div class="catalog-toolbar"><div class="search-wrap"><span class="search-symbol">⌕</span><input id="catalogSearch" type="search" placeholder="Search parts or SKU" aria-label="Search catalog"></div><select id="catalogCategory" class="select-control" aria-label="Filter by category"><option value="">All categories</option><option>Displays</option><option>Batteries</option><option>Charging</option><option>Small parts</option><option>Tools</option><option>Other</option></select></div>
+          <div class="catalog-grid" id="customerCatalog"></div><div class="empty-state catalog-empty" id="catalogEmpty" hidden><span class="empty-mark">▦</span><strong>No parts match that search</strong><p>Try a different name or category.</p></div>
+        </section>
+
+        <section class="view" id="customerRequestsView" aria-labelledby="customerRequestsHeading">
+          <div class="page-heading"><div><p class="eyebrow">YOUR FOLLOW-UPS</p><h1 id="customerRequestsHeading">My requests<span class="heading-period">.</span></h1><p class="heading-subtitle">See the latest status of parts you have asked about.</p></div></div>
+          <div class="request-list" id="customerRequestList"></div><div class="empty-state" id="customerRequestEmpty" hidden><span class="empty-mark">♡</span><strong>No requests yet</strong><p>Browse the catalog to send your first request.</p></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <dialog class="form-dialog" id="productDialog" aria-labelledby="productDialogTitle"><form id="productForm"><div class="dialog-heading"><div><p class="eyebrow">INVENTORY DETAILS</p><h2 id="productDialogTitle">Add a part</h2></div><button class="close-button" type="button" data-close-dialog aria-label="Close">×</button></div><input type="hidden" name="id"><label>Part name<input name="name" required maxlength="80" placeholder="e.g. iPhone 13 OLED display"></label><div class="form-row"><label>SKU<input name="sku" required maxlength="32" placeholder="e.g. IP13-DSP-OLED"></label><label>Category<select name="category" required><option value="">Choose category</option><option>Displays</option><option>Batteries</option><option>Charging</option><option>Small parts</option><option>Tools</option><option>Other</option></select></label></div><div class="form-row three-cols"><label>In stock<input name="stock" type="number" min="0" step="1" required value="0"></label><label>Cost price<input name="cost" type="number" min="0" step="0.01" required placeholder="0.00"></label><label>Sell price<input name="price" type="number" min="0" step="0.01" required placeholder="0.00"></label></div><label>Low-stock alert at<input name="minStock" type="number" min="0" step="1" required value="3"></label><div class="dialog-actions"><button class="button button-quiet" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit">Save part</button></div><button class="delete-button" id="deleteProductButton" type="button" hidden>Remove this part</button></form></dialog>
+
+  <dialog class="form-dialog sale-dialog" id="saleDialog" aria-labelledby="saleDialogTitle"><form id="saleForm"><div class="dialog-heading"><div><p class="eyebrow">COUNTER TRANSACTION</p><h2 id="saleDialogTitle">Record a sale</h2></div><button class="close-button" type="button" data-close-dialog aria-label="Close">×</button></div><label>Part<select name="productId" id="saleProductSelect" required></select></label><div class="form-row"><label>Quantity<input name="quantity" type="number" min="1" step="1" required value="1"></label><label>Unit price<input name="unitPrice" id="saleUnitPrice" type="number" min="0" step="0.01" required></label></div><p class="sale-total-line">Sale total <strong id="saleTotal">$0.00</strong></p><p class="form-hint" id="saleStockHint">Stock will be updated when this sale is saved.</p><div class="dialog-actions"><button class="button button-quiet" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit">Save sale</button></div></form></dialog>
+
+  <dialog class="form-dialog interest-dialog" id="interestDialog" aria-labelledby="interestDialogTitle"><form id="interestForm"><div class="dialog-heading"><div><p class="eyebrow">PARTS ENQUIRY</p><h2 id="interestDialogTitle">Send an interest request</h2></div><button class="close-button" type="button" data-close-dialog aria-label="Close">×</button></div><input type="hidden" name="productId"><p class="interest-product-name" id="interestProductName"></p><label>Quantity you need<input name="quantity" type="number" min="1" step="1" required value="1"></label><label>Note for the shop <span class="optional-label">OPTIONAL</span><textarea name="message" rows="3" maxlength="300" placeholder="Add a question or preferred contact time"></textarea></label><div class="dialog-actions"><button class="button button-quiet" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit">Send request</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

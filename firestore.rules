@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  function signedIn() {
+    return request.auth != null;
+  }
+
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid));
+    }
+
+    match /adminUsers/{userId} {
+      allow get: if isAdmin() || (signedIn() && request.auth.uid == userId);
+      allow list: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.role == 'admin'
+        && request.resource.data.addedBy == request.auth.uid
+        && request.resource.data.keys().hasOnly(['role', 'addedAt', 'addedBy']);
+      allow update, delete: if false;
+    }
+
+    match /profiles/{userId} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == userId);
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.uid == userId
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.keys().hasOnly(['uid', 'email', 'displayName', 'createdAt', 'lastSeenAt']);
+      allow update: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.uid == userId
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'lastSeenAt']);
+      allow delete: if false;
+    }
+
+    match /products/{productId} {
+      allow read: if signedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /productCosts/{productId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /sales/{saleId} {
+      allow read, create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /interests/{interestId} {
+      allow create: if signedIn()
+        && request.resource.data.customerId == request.auth.uid
+        && request.resource.data.customerEmail == request.auth.token.email
+        && request.resource.data.status == 'pending'
+        && request.resource.data.quantity is int
+        && request.resource.data.quantity > 0
+        && request.resource.data.keys().hasOnly([
+          'customerId', 'customerEmail', 'productId', 'productName', 'sku',
+          'quantity', 'message', 'status', 'createdAt'
+        ])
+        && exists(/databases/$(database)/documents/products/$(request.resource.data.productId));
+      allow read: if isAdmin() || (signedIn() && resource.data.customerId == request.auth.uid);
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'reviewedAt'])
+        && request.resource.data.status in ['approved', 'declined'];
+      allow delete: if false;
+    }
+  }
+}
